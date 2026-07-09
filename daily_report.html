@@ -1,354 +1,706 @@
 <!DOCTYPE html>
 
+
+
 <html lang="zh-CN">
+
+
 
 <head>
 
+
+
 <meta charset="UTF-8">
+
+
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+
+
 <title>高校不完美订单改善趋势日报</title>
+
+
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 
+
+
 <style>
+
+
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
+
+
 body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8f9fa; padding: 0 24px 24px; color: #1a202c; }
+
+
 
 .site-bar { display: flex; align-items: center; padding: 18px 0; margin-bottom: 20px; }
 
+
+
 .site-bar .site-logo { width: 28px; height: 28px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #d8b4fe, #9333ea 40%, #581c87 65%, #2e0a4d 100%); box-shadow: 0 2px 8px rgba(147,51,234,0.3), inset 0 -2px 4px rgba(0,0,0,0.3); margin-right: 8px; position: relative; overflow: hidden; }
+
+
 
 .site-bar .site-logo::before { content: ''; position: absolute; top: 4px; left: 5px; width: 8px; height: 8px; background: radial-gradient(circle, rgba(255,255,255,0.75), rgba(255,255,255,0) 70%); border-radius: 50%; }
 
+
+
 .site-bar .site-logo::after { content: ''; position: absolute; top: 3px; right: 6px; width: 3px; height: 3px; background: rgba(255,255,255,0.55); border-radius: 50%; }
+
+
 
 .site-bar a { display: flex; align-items: center; text-decoration: none; }
 
+
+
 .site-bar .site-name { font-size: 14px; font-weight: 600; color: #374151; }
+
+
 
 .container { max-width: 960px; margin: 0 auto; }
 
+
+
 .header { text-align: center; margin-bottom: 32px; }
+
+
 
 .header h1 { font-size: 22px; color: #1a202c; font-weight: 700; margin-bottom: 4px; }
 
+
+
 .header .subtitle { color: #6b7280; font-size: 13px; }
+
+
 
 .summary-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 28px; }
 
+
+
 .card { background: white; border-radius: 10px; padding: 18px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+
+
 
 .card .label { font-size: 12px; color: #6b7280; margin-bottom: 4px; }
 
+
+
 .card .value { font-size: 26px; font-weight: 700; }
+
+
 
 .card .change { font-size: 12px; margin-top: 3px; }
 
+
+
 .card .change.up { color: #dc2626; }
+
+
 
 .card .change.down { color: #16a34a; }
 
+
+
 .section { background: white; border-radius: 12px; padding: 22px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid #ededed; }
+
+
 
 .section h2 { font-size: 13px; color: #6b7280; margin-bottom: 6px; font-weight: 500; }
 
+
+
 .section .kpi-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
+
+
 
 .section .kpi-value { font-size: 30px; font-weight: 600; color: #1a1f36; letter-spacing: -0.5px; }
 
+
+
 .section .kpi-delta { display: inline-flex; align-items: center; gap: 4px; margin-top: 6px; padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 600; }
+
+
 
 .section .kpi-delta.up { background: #ffeff0; color: #cd3d63; }
 
+
+
 .section .kpi-delta.down { background: #e6f8ed; color: #198a3f; }
+
+
 
 .section .legend-row { display: flex; gap: 14px; flex-wrap: wrap; }
 
+
+
 .section .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #6b7280; }
+
+
 
 .section .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
 
+
+
 .chart-container { position: relative; height: 240px; }
+
+
 
 table { width: 100%; border-collapse: collapse; font-size: 13px; }
 
+
+
 th { padding: 8px 10px; text-align: right; font-weight: 600; color: #6b7280; border-bottom: 1px solid #e5e7eb; font-size: 12px; }
+
+
 
 th:first-child { text-align: left; }
 
+
+
 td { padding: 8px 10px; text-align: right; border-bottom: 1px solid #f3f4f6; }
+
+
 
 td:first-child { text-align: left; font-weight: 500; color: #374151; }
 
+
+
 .trend-badge { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 500; }
+
+
 
 .trend-badge.up { background: #fef2f2; color: #dc2626; }
 
+
+
 .trend-badge.down { background: #f0fdf4; color: #16a34a; }
+
+
 
 .trend-badge.flat { background: #f3f4f6; color: #6b7280; }
 
+
+
 .table-scroll { max-height: 280px; overflow-y: auto; border: 1px solid #e5e7eb; border-radius: 6px; }
+
+
 
 .table-scroll table { border-collapse: separate; border-spacing: 0; }
 
+
+
 .table-scroll thead { position: sticky; top: 0; z-index: 1; }
+
+
 
 .table-scroll thead th { background: #f9fafb; border-bottom: 2px solid #e5e7eb; }
 
+
+
 .table-scroll::-webkit-scrollbar { width: 6px; }
+
+
 
 .table-scroll::-webkit-scrollbar-track { background: #f3f4f6; border-radius: 3px; }
 
+
+
 .table-scroll::-webkit-scrollbar-thumb { background: #c4c8cf; border-radius: 3px; }
+
+
 
 .table-scroll::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
 
+
+
 .station-box { padding: 22px !important; }
+
+
 
 .station-scroll { max-height: 600px; overflow-y: auto; padding-right: 4px; }
 
+
+
 .station-scroll::-webkit-scrollbar { width: 5px; }
+
+
 
 .station-scroll::-webkit-scrollbar-track { background: transparent; }
 
+
+
 .station-scroll::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+
+
 
 .station-scroll::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
 
+
+
 .station-section { background: white; border-radius: 10px; padding: 0; margin-bottom: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); overflow: hidden; border-left: 3px solid #d1d5db; border: 1px solid #f0f0f0; }
+
+
 
 .station-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; cursor: pointer; user-select: none; transition: background 0.15s; }
 
+
+
 .station-header:hover { background: #f9fafb; }
+
+
 
 .station-header-left { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 
+
+
 .hdr-date { font-size: 14px; font-weight: 700; color: #1f2937; }
+
+
 
 .hdr-total { font-size: 13px; color: #6b7280; font-weight: 500; }
 
+
+
 .hdr-badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+
+
 
 .hdr-badge.hdr-improve { background: #f0fdf4; color: #16a34a; }
 
+
+
 .hdr-badge.hdr-worse { background: #fef2f2; color: #dc2626; }
+
+
 
 .hdr-badge.hdr-flat { background: #f3f4f6; color: #6b7280; }
 
+
+
 .hdr-arrow { display: inline-block; width: 18px; height: 18px; background: #f3f4f6; border-radius: 50%; position: relative; flex-shrink: 0; transition: transform 0.2s; }
+
+
 
 .hdr-arrow::after { content: ''; position: absolute; top: 6px; left: 5.5px; width: 6px; height: 6px; border-right: 1.5px solid #6b7280; border-bottom: 1.5px solid #6b7280; transform: rotate(45deg); transition: transform 0.2s; }
 
+
+
 .station-section.collapsed .hdr-arrow::after { transform: rotate(-45deg); top: 7px; }
+
+
 
 .station-content { max-height: 2000px; overflow: hidden; transition: max-height 0.35s ease, opacity 0.25s ease; opacity: 1; }
 
+
+
 .station-section.collapsed .station-content { max-height: 0; opacity: 0; transition: max-height 0.3s ease, opacity 0.15s ease; }
+
+
 
 .station-item { padding: 10px 18px; border-bottom: 1px solid #f3f4f6; line-height: 1.6; font-size: 13px; }
 
+
+
 .station-item .station-compare { display: inline-block; margin-top: 2px; padding-left: 2px; font-size: 12px; }
+
+
 
 .station-item:last-child { border-bottom: none; }
 
+
+
 .station-name { font-weight: 600; color: #1f2937; }
+
+
 
 .station-total { font-weight: 700; color: #dc2626; }
 
+
+
 .station-compare { font-size: 12px; }
+
+
 
 .station-compare.improve { color: #16a34a; font-weight: 600; }
 
+
+
 .station-compare.worse { color: #dc2626; font-weight: 600; }
+
+
 
 .station-compare.flat { color: #6b7280; }
 
+
+
 .station-compare.new { color: #7c3aed; font-weight: 600; }
+
+
 
 .station-contacts { display: inline-block; margin-left: 8px; font-size: 12px; color: #635bff; font-weight: 500; background: #f0eeff; padding: 1px 6px; border-radius: 4px; }
 
+
+
 .contacts-summary-box { padding: 22px !important; }
+
+
 
 .contacts-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; padding-bottom: 14px; }
 
+
+
 .contacts-header:hover { opacity: 0.8; }
+
+
 
 .contacts-arrow { position: relative; width: 24px; height: 24px; flex-shrink: 0; }
 
+
+
 .contacts-arrow::after { content: ''; position: absolute; width: 10px; height: 10px; border-right: 2.5px solid #6b7280; border-bottom: 2.5px solid #6b7280; transform: rotate(45deg); top: 4px; left: 6px; transition: transform 0.2s; }
+
+
 
 .contacts-summary-box.collapsed .contacts-arrow::after { transform: rotate(-45deg); top: 8px; }
 
+
+
 .contacts-body { max-height: 800px; opacity: 1; overflow: hidden; transition: max-height 0.3s ease, opacity 0.2s ease; }
+
+
 
 .contacts-summary-box.collapsed .contacts-body { max-height: 0; opacity: 0; }
 
+
+
 .contacts-list { display: flex; flex-direction: column; gap: 0; }
+
+
 
 .contacts-row { padding: 10px 14px; border-bottom: 1px solid #f3f4f6; font-size: 13px; line-height: 1.6; }
 
+
+
 .contacts-row:last-child { border-bottom: none; }
+
+
 
 .contacts-site { font-weight: 600; color: #1f2937; }
 
+
+
 .contacts-num { font-weight: 700; color: #dc2626; }
+
+
 
 .contacts-ppl { color: #635bff; font-weight: 500; }
 
+
+
 .station-summary { padding: 14px 18px; background: #f9fafb; font-size: 13px; line-height: 1.7; color: #374151; position: relative; }
+
+
 
 .summary-copy-bar { text-align: right; margin-bottom: 6px; }
 
+
+
 .copy-btn { background: #635bff; color: #fff; border: none; border-radius: 4px; padding: 4px 12px; font-size: 12px; cursor: pointer; transition: background 0.2s; }
+
+
 
 .copy-btn:hover { background: #4b44d4; }
 
+
+
 .copy-btn.copied { background: #16a34a; }
+
+
 
 .review-section { margin-bottom: 10px; }
 
+
+
 .review-section:last-child { margin-bottom: 0; }
+
+
 
 .review-section strong { color: #1f2937; }
 
+
+
 .footer { text-align: center; margin-top: 20px; color: #9ca3af; font-size: 11px; }
+
+
 
 @media (max-width: 768px) { .summary-cards { grid-template-columns: 1fr; } }
 
+
+
 /* === Tab system === */
+
+
 
 .main-tabs { display:flex; justify-content:center; gap:6px; margin-bottom:24px; }
 
+
+
 .main-tab { padding:8px 20px; font-size:14px; font-weight:600; border-radius:8px; cursor:pointer; border:1px solid #e5e7eb; background:#fff; color:#6b7280; transition:all .15s; }
+
+
 
 .main-tab.active { background:#635bff; color:#fff; border-color:#635bff; }
 
+
+
 .main-tab:hover:not(.active) { background:#f3f4f6; }
+
+
 
 .tab-panel { display:none; }
 
+
+
 .tab-panel.active { display:block; }
+
+
 
 /* === Agent Tab === */
 
+
+
 .ag-combo-wrap { position:relative; max-width:440px; margin:0 auto 18px; }
+
+
 
 .ag-combo-input { width:100%; padding:11px 38px 11px 14px; font-size:14px; border:1px solid #d1d5db; border-radius:10px; background:#fff; outline:none; }
 
+
+
 .ag-combo-input:focus { border-color:#635bff; box-shadow:0 0 0 3px rgba(99,91,255,0.12); }
+
+
 
 .ag-combo-arrow { position:absolute; right:12px; top:50%; width:10px; height:10px; border-right:2px solid #6b7280; border-bottom:2px solid #6b7280; transform:translateY(-70%) rotate(45deg); pointer-events:none; }
 
+
+
 .ag-combo-list { position:absolute; top:100%; left:0; right:0; max-height:320px; overflow-y:auto; background:#fff; border:1px solid #e5e7eb; border-radius:10px; margin-top:4px; box-shadow:0 8px 24px rgba(0,0,0,0.08); display:none; z-index:50; }
+
+
 
 .ag-combo-list.open { display:block; }
 
+
+
 .ag-combo-item { padding:9px 14px; cursor:pointer; font-size:13px; display:flex; justify-content:space-between; align-items:center; }
+
+
 
 .ag-combo-item:hover,.ag-combo-item.active { background:#f3f4f6; }
 
+
+
 .ag-combo-item .num { color:#6b7280; font-size:12px; font-variant-numeric:tabular-nums; }
+
+
 
 .ag-summary-cards { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin-bottom:18px; }
 
+
+
 .ag-card { background:#fff; border-radius:10px; padding:14px; border:1px solid #ededed; }
+
+
 
 .ag-card .label { font-size:12px; color:#6b7280; margin-bottom:4px; }
 
+
+
 .ag-card .value { font-size:24px; font-weight:700; }
+
+
 
 .ag-card .change { font-size:11px; margin-top:2px; color:#6b7280; }
 
+
+
 .ag-card.bad .value { color:#dc2626; }
+
+
 
 .ag-card.good .value { color:#16a34a; }
 
+
+
 .ag-chart-wrap { position:relative; height:280px; }
+
+
 
 .ag-review-list { list-style:none; padding:0; }
 
+
+
 .ag-review-list li { padding:9px 12px; margin-bottom:6px; border-radius:8px; font-size:13px; line-height:1.6; border-left:3px solid #d1d5db; background:#f9fafb; }
+
+
 
 .ag-review-list li.bad { border-left-color:#dc2626; background:#fef2f2; color:#7f1d1d; }
 
+
+
 .ag-review-list li.warn { border-left-color:#f59e0b; background:#fffbeb; color:#78350f; }
+
+
 
 .ag-review-list li.good { border-left-color:#16a34a; background:#f0fdf4; color:#14532d; }
 
+
+
 .ag-review-list li.mild { border-left-color:#f97316; background:#fff7ed; color:#7c2d12; }
+
+
 
 .ag-review-list li.info { border-left-color:#3b82f6; background:#eff6ff; color:#1e3a8a; }
 
+
+
 .ag-review-list li.flat { border-left-color:#9ca3af; background:#f3f4f6; color:#374151; }
+
+
 
 .ag-copy-btn { float:right; padding:4px 10px; font-size:12px; background:#635bff; color:#fff; border:none; border-radius:6px; cursor:pointer; }
 
+
+
 .ag-copy-btn:hover { background:#5048e5; }
+
+
 
 .ag-copy-btn.copied { background:#16a34a; }
 
+
+
 .ag-section { background:#fff; border-radius:12px; padding:22px; margin-bottom:18px; box-shadow:0 1px 3px rgba(0,0,0,0.05); border:1px solid #ededed; }
+
+
 
 .ag-section-title { font-size:15px; font-weight:700; margin-bottom:12px; color:#1f2937; }
 
+
+
 .ag-section-title .small { font-size:12px; color:#6b7280; font-weight:400; margin-left:6px; }
+
+
 
 .ag-station-table { width:100%; border-collapse:collapse; font-size:13px; }
 
+
+
 .ag-station-table th,.ag-station-table td { padding:9px 10px; text-align:left; border-bottom:1px solid #f0f0f0; }
+
+
 
 .ag-station-table th { background:#fafafa; font-weight:600; color:#4b5563; font-size:12px; }
 
+
+
 .ag-station-table td.num { text-align:right; font-variant-numeric:tabular-nums; }
+
+
 
 .ag-diff-up { color:#dc2626; font-weight:600; }
 
+
+
 .ag-diff-down { color:#16a34a; font-weight:600; }
+
+
 
 .ag-diff-flat { color:#9ca3af; }
 
+
+
 .ag-contacts-pill { display:inline-block; background:#eef2ff; color:#4338ca; padding:1px 7px; border-radius:10px; font-size:11px; margin-right:4px; }
+
+
 
 @media (max-width:768px) { .ag-summary-cards { grid-template-columns:repeat(2,1fr); } }
 
+
+
 </style>
+
+
 
 </head>
 
+
+
 <body>
+
+
 
 <div class="container">
 
+
+
   <div class="site-bar"><a href="https://skr-ai.github.io/imperfect-order-report-july/"><div class="site-logo"></div><span class="site-name">玛瑙的小站</span></a></div>
+
+
 
   <div class="header">
 
+
+
     <h1>高校不完美订单改善趋势日报</h1>
+
+
 
     <div class="subtitle">报告日期：2026-07-09 | 数据范围：7/1 - 7/7 | 窄口径</div>
 
+
+
   </div>
+
+
+
+
 
 
 
   <div class="main-tabs">
 
+
+
     <div class="main-tab active" data-tab="tabDay">日维度</div>
 
+
+
     <div class="main-tab" data-tab="tabAgent">代理商维度</div>
+
+
 
   </div>
 
 
 
+
+
+
+
   <div id="tabDay" class="tab-panel active">
 
+
+
   <div class="summary-cards">
+
+
 
     <div class="card">
       <div class="label">最新日不完美订单</div>
@@ -371,116 +723,230 @@ td:first-child { text-align: left; font-weight: 500; color: #374151; }
 
 
 
+
+
+
+
   <div class="section">
+
+
 
     <div class="kpi-row">
 
+
+
       <div>
 
+
+
         <h2>不完美订单总量</h2>
+
+
 
         <div class="kpi-value">335 单</div>
         <span class="kpi-delta up">↑ +73 (+27.9%) vs 前日</span>
 
+
+
       </div>
 
+
+
       <div class="legend-row">
+
+
 
         <div class="legend-item"><span class="legend-dot" style="background:#635bff;"></span>本期 7/1–7/7
 
+
+
       </div>
+
+
 
     </div>
 
+
+
     <div class="chart-container">
+
+
 
       <canvas id="totalChart"></canvas>
 
+
+
     </div>
+
+
 
   </div>
 
 
 
+
+
+
+
   <div class="section">
+
+
 
     <div class="kpi-row">
 
+
+
       <div>
+
+
 
         <h2>分类指标趋势</h2>
 
+
+
         <div class="kpi-value" style="font-size:18px;color:#374151;">提前/虚假 · T30超时 · 不满意 · 未妥投</div>
 
+
+
       </div>
+
+
 
       <div class="legend-row">
 
+
+
         <div class="legend-item"><span class="legend-dot" style="background:#635bff;"></span>提前/虚假</div>
+
+
 
         <div class="legend-item"><span class="legend-dot" style="background:#cd3d63;"></span>T30超时</div>
 
+
+
         <div class="legend-item"><span class="legend-dot" style="background:#f5a623;"></span>不满意</div>
+
+
 
         <div class="legend-item"><span class="legend-dot" style="background:#198a3f;"></span>未妥投</div>
 
+
+
       </div>
 
+
+
     </div>
+
+
 
     <div class="chart-container">
 
+
+
       <canvas id="categoryChart"></canvas>
+
+
 
     </div>
 
+
+
   </div>
+
+
+
+
 
 
 
   <div class="section">
 
+
+
     <h2>每日数据明细</h2>
+
+
 
     <div class="table-scroll">
 
+
+
       <table>
+
+
 
         <thead>
 
+
+
           <tr>
+
+
 
             <th>日期</th>
 
+
+
             <th>总单</th>
+
+
 
             <th>环比</th>
 
+
+
             <th>T30超时</th>
+
+
 
             <th>未妥投</th>
 
+
+
             <th>提前/虚假</th>
+
+
 
             <th>不满意</th>
 
+
+
           </tr>
+
+
 
         </thead>
 
+
+
         <tbody id="tableBody"></tbody>
+
+
 
       </table>
 
+
+
     </div>
 
+
+
   </div>
+
+
+
+
 
 
 
   <div class="section station-box">
 
+
+
     <h2 style="margin:0 0 12px;font-size:16px;font-weight:700;color:#1f2937;">站点达成明细</h2>
+
+
 
     <div class="station-scroll">
     <div class="station-section" style="border-left:3px solid #dc2626;">
@@ -555,7 +1021,18 @@ td:first-child { text-align: left; font-weight: 500; color: #374151; }
       </div>
       <div id="summary-0077" class="station-summary">
         <div class="summary-copy-bar"><button class="copy-btn" onclick="copySummary('0077')">复制</button></div>
-        <b>总结：</b>7月7日产生严重不完美订单335单，较前日（262单）上升73单；其中T30超时161单（48.1%）、提前/虚假配送66单（19.7%）、不满意44单（13.1%）、未妥投11单（3.3%）。<br><br><b>站点分析：</b>Top3站点合计155单占46.3%：广州优送达-广东机电职业技术学院任意门站 64单（19.1%）；厦门派得快-华南理工大学(国际校区)校外站 61单（18.2%）；广州云闪送-松田职业学院 30单（9.0%）。<br><br><b>Top3站点核心问题与改善措施：</b><br>1、广州优送达-广东机电职业技术学院任意门站（64单，新增站点）<br>问题：T30超时63单，占比98.4%——推测运力严重不足或配送距离远，导致大面积超时。<br>→ 紧急补充运力，优化配送路线规划；排查是否存在商户出餐慢导致的链路延迟；与站长确认配送范围是否合理。<br>2、厦门派得快-华南理工大学(国际校区)校外站（61单，前日5单↑56）<br>问题：T30超时49单+未妥投8单——校区配送距离远、入校管控严格，骑手无法按时送达；实际推单超预测导致运力不足。<br>→ 增加入校投餐批次，补充运力；与校方沟通放餐点设置；加强人手规划应对单量波动。<br>3、广州云闪送-松田职业学院（30单，前日91单↓61，改善）<br>问题：T30超时29单——虽大幅改善，仍以超时为主，商户出餐慢或运力调度不及时。<br>→ 持续关注出餐效率，高峰期加派人手；维持改善趋势。<br><br><b>改善站点：</b>广州云闪送-松田职业学院（↓61）；厦门派得快-广州铁路职业技术学院(科教城校区)任意门站（↓15）；同学帮-广州南方学院站（↓7）；闪送侠配送-广州增城华商学院任意门站（↓2）<br><b>恶化站点：</b>厦门派得快-华南理工大学(国际校区)校外站（↑56）；麻豆人-番禺区大学城站（↑11）；珠海智创-南方医科大学站（↑6）<br><b>新增站点：</b>广州优送达-广东机电职业技术学院任意门站 64单；广州荣榕-岭南学院站 7单；广州松严-广州番禺职业技术学院任意门店 6单；广州晟丽-广东轻工职业技术学院（新港）6单；极速达-医科大 5单；珠海智创-广东生态工程职业学院校外站 5单<br>
+        
+        <b>总结：</b>7月7日产生严重不完美订单335单，较前日（262单）上升73单；其中T30超时261单（77.9%）、提前/虚假配送148单（44.2%）、不满意68单（20.3%）、未妥投20单（6.0%）。<br><br><b>站点分析：</b>Top3站点合计216单占64.5%：广州云闪送-松田职业学院 91单（27.2%）；广州优送达-广东机电职业技术学院任意门站 64单（19.1%）；厦门派得快-华南理工大学(国际校区)校外站 61单（18.2%）。<br><br><b>Top3站点核心问题与改善措施：</b><br>1、广州云闪送-松田职业学院（91单，新增站点）<br>问题：T30超时83单。<br>→ 高峰期加派运力、优化配送路线，排查商户出餐慢环节，与站长确认配送范围合理性。<br>2、广州优送达-广东机电职业技术学院任意门站（64单，新增站点）<br>问题：T30超时63单。<br>→ 高峰期加派运力、优化配送路线，排查商户出餐慢环节，与站长确认配送范围合理性。<br>3、厦门派得快-华南理工大学(国际校区)校外站（61单，前日5单↑56，恶化）<br>问题：T30超时49单。<br>→ 高峰期加派运力、优化配送路线，排查商户出餐慢环节，与站长确认配送范围合理性。<br><br><b>改善站点：</b>广州云闪送-松田职业学院（↓61）；珠海智创-南方医科大学站（↓59）；厦门派得快-广州铁路职业技术学院(科教城校区)任意门站（↓15）；麻豆人-番禺区大学城站（↓13）；同学帮-广州南方学院站（↓7）<br><b>恶化站点：</b>厦门派得快-华南理工大学(国际校区)校外站（↑56）；厦门派得快-广州铁路职业技术学院(科教城校区)任意门站（↑17）；麻豆人-番禺区大学城站（↑11）；珠海智创-南方医科大学站（↑6）；广州晟丽—航海学院（黄埔）（↑2）<br><b>新增站点：</b>广州云闪送-松田职业学院 91单；广州优送达-广东机电职业技术学院任意门站 64单；闪送侠配送-广州增城华商学院任意门站 10单；广州晟丽-广州工程技术职业学院校外站（从化）（⾼校配送） 9单；广州荣榕-岭南学院站 7单；广州胜凯-广东工程天河校区校外站（高校站） 7单<br>
+      
+      </div>
+    </div>
+    </div>
+    <div class="station-section" style="border-left:3px solid #dc2626;">
+    <div class="station-header" onclick="this.parentElement.classList.toggle('collapsed')">
+      <div class="station-header-left">
+        <span class="hdr-date">7/6</span>
+        <span class="hdr-total">262单</span>
+        <span class="hdr-badge hdr-worse">+11</span>
       </div>
       <span class="hdr-arrow"></span>
     </div>
@@ -610,7 +1087,9 @@ td:first-child { text-align: left; font-weight: 500; color: #374151; }
       </div>
       <div id="summary-0076" class="station-summary">
         <div class="summary-copy-bar"><button class="copy-btn" onclick="copySummary('0076')">复制</button></div>
-        <b>7/6 高校严重不完美订单 262单</b>（前日251单，↑11单，恶化）<br><br><b>改善站点：</b>珠海智创-南方医科大学站 6单（前日65，↓59）；麻豆人-番禺区大学城站 16单（前日29，↓13）<br><br><b>恶化站点：</b>厦门派得快-广州铁路职业技术学院(科教城校区)任意门站 30单（前日13，↑17）<br><br><b>新增站点：</b>广州云闪送-松田职业学院 91单；闪送侠配送-广州增城华商学院任意门站 10单；广州晟丽-广州工程技术职业学院校外站（从化）（⾼校配送） 9单；广州胜凯-广东工程天河校区校外站（高校站） 7单；广州易送达—金融学院校外站 5单<br>
+        
+        <b>总结：</b>7月6日产生严重不完美订单262单，较前日（251单）上升11单；其中T30超时100单（38.2%）、提前/虚假配送82单（31.3%）、不满意24单（9.2%）、未妥投9单（3.4%）。<br><br><b>站点分析：</b>Top3站点合计138单占52.7%：广州云闪送-松田职业学院 91单（34.7%）；厦门派得快-广州铁路职业技术学院(科教城校区)任意门站 30单（11.5%）；同学帮-广州南方学院站 17单（6.5%）。<br><br><b>Top3站点核心问题与改善措施：</b><br>1、广州云闪送-松田职业学院（91单，新增站点）<br>问题：T30超时83单。<br>→ 高峰期加派运力、优化配送路线，排查商户出餐慢环节，与站长确认配送范围合理性。<br>2、厦门派得快-广州铁路职业技术学院(科教城校区)任意门站（30单，前日13单↑17，恶化）<br>问题：提前/虚假26单。<br>→ 强制妥投规范、核对餐品后再配送，加强骑手操作培训，现场督导提醒。<br>3、同学帮-广州南方学院站（17单，前日19单↓2，改善）<br>问题：提前/虚假14单、不满意3单。<br>→ 强制妥投规范、核对餐品后再配送，加强骑手操作培训，现场督导提醒。<br><br><b>改善站点：</b>珠海智创-南方医科大学站（↓59）；麻豆人-番禺区大学城站（↓13）；同学帮-广州南方学院站（↓2）；厦门派得快-华南理工大学(国际校区)校外站（↓1）<br><b>恶化站点：</b>厦门派得快-广州铁路职业技术学院(科教城校区)任意门站（↑17）；广州晟丽—航海学院（黄埔）（↑2）<br><b>新增站点：</b>广州云闪送-松田职业学院 91单；闪送侠配送-广州增城华商学院任意门站 10单；广州晟丽-广州工程技术职业学院校外站（从化）（⾼校配送） 9单；广州胜凯-广东工程天河校区校外站（高校站） 7单；广州易送达—金融学院校外站 5单；联睿盟天-广州新华学院（广州校区） 4单<br>
+      
       </div>
     </div>
     </div>
@@ -682,7 +1161,9 @@ td:first-child { text-align: left; font-weight: 500; color: #374151; }
       </div>
       <div id="summary-0075" class="station-summary">
         <div class="summary-copy-bar"><button class="copy-btn" onclick="copySummary('0075')">复制</button></div>
-        <b>7/5 高校严重不完美订单 251单</b>（前日272单，↓21单，改善）<br><br><b>改善站点：</b>厦门派得快-华南理工大学(国际校区)校外站 6单（前日25，↓19）<br><br><b>恶化站点：</b>珠海智创-南方医科大学站 65单（前日29，↑36）<br><br><b>新增站点：</b>广州行之途-广州中医药大学（大学城校区）-任意门站 12单；广州荣榕-岭南学院站 7单；深圳优地-广州仲恺任意门站 6单；广州晟丽-广东交通职业技术学院（花都） 5单<br>
+        
+        <b>总结：</b>7月5日产生严重不完美订单251单，较前日（272单）下降21单；其中提前/虚假配送85单（33.9%）、T30超时60单（23.9%）、不满意37单（14.7%）、未妥投31单（12.4%）。<br><br><b>站点分析：</b>Top3站点合计113单占45.0%：珠海智创-南方医科大学站 65单（25.9%）；麻豆人-番禺区大学城站 29单（11.6%）；同学帮-广州南方学院站 19单（7.6%）。<br><br><b>Top3站点核心问题与改善措施：</b><br>1、珠海智创-南方医科大学站（65单，前日29单↑36，恶化）<br>问题：T30超时33单、未妥投29单。<br>→ 高峰期加派运力、优化配送路线，排查商户出餐慢环节，与站长确认配送范围合理性。<br>2、麻豆人-番禺区大学城站（29单，前日31单↓2，改善）<br>问题：不满意19单、提前/虚假12单。<br>→ 排查校内偷餐/丢餐情况，完善收餐链路，异常单及时客服介入线下处理。<br>3、同学帮-广州南方学院站（19单，前日28单↓9，改善）<br>问题：提前/虚假17单。<br>→ 强制妥投规范、核对餐品后再配送，加强骑手操作培训，现场督导提醒。<br><br><b>改善站点：</b>厦门派得快-华南理工大学(国际校区)校外站（↓19）；同学帮-广州南方学院站（↓9）；厦门派得快-广州铁路职业技术学院(科教城校区)任意门站（↓5）；麻豆人-番禺区大学城站（↓2）<br><b>恶化站点：</b>珠海智创-南方医科大学站（↑36）；深圳优地-广州城市理工学院（↑7）；广州松严-广州番禺职业技术学院任意门店（↑2）；珠海智创-广东生态工程职业学院校外站（↑1）<br><b>新增站点：</b>广州行之途-广州中医药大学（大学城校区）-任意门站 12单；广州荣榕-岭南学院站 7单；深圳优地-广州仲恺任意门站 6单；广州晟丽-广东交通职业技术学院（花都） 5单<br>
+      
       </div>
     </div>
     </div>
@@ -758,7 +1239,9 @@ td:first-child { text-align: left; font-weight: 500; color: #374151; }
       </div>
       <div id="summary-0074" class="station-summary">
         <div class="summary-copy-bar"><button class="copy-btn" onclick="copySummary('0074')">复制</button></div>
-        <b>7/4 高校严重不完美订单 272单</b>（前日204单，↑68单，恶化）<br><br><b>恶化站点：</b>同学帮-广州南方学院站 28单（前日13，↑15）<br><br><b>新增站点：</b>厦门派得快-华南理工大学(国际校区)校外站 25单；厦门派得快-广州铁路职业技术学院(科教城校区)任意门站 18单；广州胜凯-水利水电校内校外站 8单；广州胜凯-广东工程天河校区校外站（高校站） 7单；极速达-医科大 7单<br>
+        
+        <b>总结：</b>7月4日产生严重不完美订单272单，较前日（204单）上升68单；其中提前/虚假配送99单（36.4%）、不满意56单（20.6%）、T30超时48单（17.6%）、未妥投10单（3.7%）。<br><br><b>站点分析：</b>Top3站点合计88单占32.4%：麻豆人-番禺区大学城站 31单（11.4%）；珠海智创-南方医科大学站 29单（10.7%）；同学帮-广州南方学院站 28单（10.3%）。<br><br><b>Top3站点核心问题与改善措施：</b><br>1、麻豆人-番禺区大学城站（31单，前日38单↓7，改善）<br>问题：不满意21单、提前/虚假12单。<br>→ 排查校内偷餐/丢餐情况，完善收餐链路，异常单及时客服介入线下处理。<br>2、珠海智创-南方医科大学站（29单，前日32单↓3，改善）<br>问题：T30超时17单、提前/虚假8单。<br>→ 高峰期加派运力、优化配送路线，排查商户出餐慢环节，与站长确认配送范围合理性。<br>3、同学帮-广州南方学院站（28单，前日13单↑15，恶化）<br>问题：提前/虚假24单、不满意6单。<br>→ 强制妥投规范、核对餐品后再配送，加强骑手操作培训，现场督导提醒。<br><br><b>改善站点：</b>麻豆人-番禺区大学城站（↓7）；珠海智创-南方医科大学站（↓3）；珠海智创-广东生态工程职业学院校外站（↓1）；深圳优地-广州城市理工学院（↓1）<br><b>恶化站点：</b>同学帮-广州南方学院站（↑15）；广州晟丽—航海学院（黄埔）（↑2）；广州晟丽-广州工程技术职业学院校外站（从化）（⾼校配送）（↑1）<br><b>新增站点：</b>厦门派得快-华南理工大学(国际校区)校外站 25单；厦门派得快-广州铁路职业技术学院(科教城校区)任意门站 18单；广州胜凯-水利水电校内校外站 8单；广州胜凯-广东工程天河校区校外站（高校站） 7单；极速达-医科大 7单；广州松严-广州番禺职业技术学院任意门店 6单<br>
+      
       </div>
     </div>
     </div>
@@ -822,7 +1305,9 @@ td:first-child { text-align: left; font-weight: 500; color: #374151; }
       </div>
       <div id="summary-0073" class="station-summary">
         <div class="summary-copy-bar"><button class="copy-btn" onclick="copySummary('0073')">复制</button></div>
-        <b>7/3 高校严重不完美订单 204单</b>（前日194单，↑10单，恶化）<br><br><b>恶化站点：</b>麻豆人-番禺区大学城站 38单（前日23，↑15）<br><br><b>新增站点：</b>广州晟丽—航海学院（黄埔） 7单；珠海煜明-中山大学广州南校区站 6单；集一-广东行政职业学院花都校区站 5单；极速达-女子学院站 4单<br>
+        
+        <b>总结：</b>7月3日产生严重不完美订单204单，较前日（194单）上升10单；其中提前/虚假配送72单（35.3%）、不满意40单（19.6%）、T30超时24单（11.8%）、未妥投9单（4.4%）。<br><br><b>站点分析：</b>Top3站点合计83单占40.7%：麻豆人-番禺区大学城站 38单（18.6%）；珠海智创-南方医科大学站 32单（15.7%）；同学帮-广州南方学院站 13单（6.4%）。<br><br><b>Top3站点核心问题与改善措施：</b><br>1、麻豆人-番禺区大学城站（38单，前日23单↑15，恶化）<br>问题：不满意22单、提前/虚假18单。<br>→ 排查校内偷餐/丢餐情况，完善收餐链路，异常单及时客服介入线下处理。<br>2、珠海智创-南方医科大学站（32单，前日25单↑7，恶化）<br>问题：T30超时18单、提前/虚假8单、未妥投7单。<br>→ 高峰期加派运力、优化配送路线，排查商户出餐慢环节，与站长确认配送范围合理性。<br>3、同学帮-广州南方学院站（13单，前日12单↑1，恶化）<br>问题：提前/虚假12单、不满意3单。<br>→ 强制妥投规范、核对餐品后再配送，加强骑手操作培训，现场督导提醒。<br><br><b>改善站点：</b>深圳优地-广州仲恺任意门站（↓3）<br><b>恶化站点：</b>麻豆人-番禺区大学城站（↑15）；珠海智创-南方医科大学站（↑7）；广州晟丽-广东外语外贸北校区站（↑2）；同学帮-广州南方学院站（↑1）；珠海智创-广东生态工程职业学院校外站（↑1）<br><b>新增站点：</b>广州晟丽—航海学院（黄埔） 7单；珠海煜明-中山大学广州南校区站 6单；集一-广东行政职业学院花都校区站 5单；极速达-女子学院站 4单<br>
+      
       </div>
     </div>
     </div>
@@ -886,7 +1371,9 @@ td:first-child { text-align: left; font-weight: 500; color: #374151; }
       </div>
       <div id="summary-0072" class="station-summary">
         <div class="summary-copy-bar"><button class="copy-btn" onclick="copySummary('0072')">复制</button></div>
-        <b>7/2 高校严重不完美订单 194单</b>（前日214单，↓20单，改善）<br><br><b>改善站点：</b>麻豆人-番禺区大学城站 23单（前日34，↓11）<br><br><b>恶化站点：</b>珠海智创-南方医科大学站 25单（前日12，↑13）<br><br><b>新增站点：</b>广州松严-广州番禺职业技术学院任意门店 10单；深圳优地-广州城市理工学院 6单；闪送侠配送-广州增城华商学院任意门站 5单；广州胜凯-水利水电校内校外站 5单<br>
+        
+        <b>总结：</b>7月2日产生严重不完美订单194单，较前日（214单）下降20单；其中提前/虚假配送82单（42.3%）、不满意29单（14.9%）、T30超时23单（11.9%）、未妥投11单（5.7%）。<br><br><b>站点分析：</b>Top3站点合计72单占37.1%：珠海智创-南方医科大学站 25单（12.9%）；厦门派得快-广州铁路职业技术学院(科教城校区)任意门站 24单（12.4%）；麻豆人-番禺区大学城站 23单（11.9%）。<br><br><b>Top3站点核心问题与改善措施：</b><br>1、珠海智创-南方医科大学站（25单，前日12单↑13，恶化）<br>问题：T30超时12单、提前/虚假7单、未妥投4单。<br>→ 高峰期加派运力、优化配送路线，排查商户出餐慢环节，与站长确认配送范围合理性。<br>2、厦门派得快-广州铁路职业技术学院(科教城校区)任意门站（24单，前日19单↑5，恶化）<br>问题：提前/虚假20单。<br>→ 强制妥投规范、核对餐品后再配送，加强骑手操作培训，现场督导提醒。<br>3、麻豆人-番禺区大学城站（23单，前日34单↓11，改善）<br>问题：不满意14单、提前/虚假13单。<br>→ 排查校内偷餐/丢餐情况，完善收餐链路，异常单及时客服介入线下处理。<br><br><b>改善站点：</b>麻豆人-番禺区大学城站（↓11）；广州晟丽-广州工程技术职业学院校外站（从化）（⾼校配送）（↓5）；同学帮-广州南方学院站（↓3）；珠海智创-广东生态工程职业学院校外站（↓2）；广州晟丽-广东外语外贸北校区站（↓1）<br><b>恶化站点：</b>珠海智创-南方医科大学站（↑13）；厦门派得快-广州铁路职业技术学院(科教城校区)任意门站（↑5）；深圳优地-广州仲恺任意门站（↑3）<br><b>新增站点：</b>广州松严-广州番禺职业技术学院任意门店 10单；深圳优地-广州城市理工学院 6单；闪送侠配送-广州增城华商学院任意门站 5单；广州胜凯-水利水电校内校外站 5单<br>
+      
       </div>
     </div>
     </div>
@@ -958,18 +1445,31 @@ td:first-child { text-align: left; font-weight: 500; color: #374151; }
       </div>
       <div id="summary-0071" class="station-summary">
         <div class="summary-copy-bar"><button class="copy-btn" onclick="copySummary('0071')">复制</button></div>
-        <b>7/1 高校严重不完美订单 214单</b>（前日0单，↑214单，恶化）<br><br><b>新增站点：</b>麻豆人-番禺区大学城站 34单；厦门派得快-广州铁路职业技术学院(科教城校区)任意门站 19单；同学帮-广州南方学院站 15单；珠海智创-南方医科大学站 12单；广州晟丽-广州工程技术职业学院校外站（从化）（⾼校配送） 9单<br>
+        
+        <b>总结：</b>7月1日产生严重不完美订单214单，较前日上升214单；其中提前/虚假配送79单（36.9%）、不满意44单（20.6%）、T30超时25单（11.7%）、未妥投5单（2.3%）。<br><br><b>站点分析：</b>Top3站点合计68单占31.8%：麻豆人-番禺区大学城站 34单（15.9%）；厦门派得快-广州铁路职业技术学院(科教城校区)任意门站 19单（8.9%）；同学帮-广州南方学院站 15单（7.0%）。<br><br><b>Top3站点核心问题与改善措施：</b><br>1、麻豆人-番禺区大学城站（34单，新增站点）<br>问题：不满意25单、提前/虚假13单。<br>→ 排查校内偷餐/丢餐情况，完善收餐链路，异常单及时客服介入线下处理。<br>2、厦门派得快-广州铁路职业技术学院(科教城校区)任意门站（19单，新增站点）<br>问题：提前/虚假16单、不满意3单。<br>→ 强制妥投规范、核对餐品后再配送，加强骑手操作培训，现场督导提醒。<br>3、同学帮-广州南方学院站（15单，新增站点）<br>问题：提前/虚假14单。<br>→ 强制妥投规范、核对餐品后再配送，加强骑手操作培训，现场督导提醒。<br><br><b>改善站点：</b>无<br><b>恶化站点：</b>无<br><b>新增站点：</b>麻豆人-番禺区大学城站 34单；厦门派得快-广州铁路职业技术学院(科教城校区)任意门站 19单；同学帮-广州南方学院站 15单；珠海智创-南方医科大学站 12单；广州晟丽-广州工程技术职业学院校外站（从化）（⾼校配送） 9单；珠海智创-广东生态工程职业学院校外站 9单<br>
+      
       </div>
     </div>
     </div>
+  
 
 </div>
+
+
 
   </div>
 
 
 
+
+
+
+
 </div>
+
+
+
+
 
 
 
@@ -984,780 +1484,1560 @@ td:first-child { text-align: left; font-weight: 500; color: #374151; }
 
 
 
+
+
+
+
   <div id="tabAgent" class="tab-panel">
+
+
 
     <div class="ag-combo-wrap" id="agentCombo">
 
+
+
       <input type="text" class="ag-combo-input" id="agentInput" placeholder="搜索/选择代理商..." autocomplete="off">
+
+
 
       <span class="ag-combo-arrow"></span>
 
+
+
       <div class="ag-combo-list" id="agentList"></div>
 
+
+
     </div>
+
+
 
     <div class="ag-summary-cards" id="agSummaryCards"></div>
 
+
+
     <div class="ag-section">
+
+
 
       <div class="ag-section-title">11 天总单量趋势 <span class="small">（窄口径严重不完美）</span></div>
 
+
+
       <div class="ag-chart-wrap"><canvas id="agTrendChart"></canvas></div>
+
+
 
     </div>
 
+
+
     <div class="ag-section">
+
+
 
       <div class="ag-section-title">📋 自动复盘<button class="ag-copy-btn" id="agCopyReview">复制为文本</button></div>
 
+
+
       <ul class="ag-review-list" id="agReviewList"></ul>
 
+
+
     </div>
+
+
 
     <div class="ag-section">
 
+
+
       <div class="ag-section-title">站点明细 <span class="small">（按当日单量降序）</span></div>
+
+
 
       <table class="ag-station-table">
 
+
+
         <thead><tr>
+
+
 
           <th>站点</th><th class="num">单量</th><th class="num">环比</th>
 
+
+
           <th class="num">T30</th><th class="num">未妥</th><th class="num">提虚</th><th class="num">不满</th>
+
+
 
           <th>对接人</th>
 
+
+
         </tr></thead>
+
+
 
         <tbody id="agStationBody"></tbody>
 
+
+
       </table>
 
+
+
     </div>
+
+
 
   </div><!-- /tabAgent -->
 
 
 
+
+
+
+
   <div class="footer">
+
+
 
     数据来源：<a href="https://skr-ai.github.io/imperfect-order-report-july/" target="_blank" style="color:#6b7280;">观星台 - 严重不完美订单报表</a> | 自动生成于 2026-07-09
 
+
+
   </div>
+
+
 
 </div>
 
 
 
+
+
+
+
 <script>
 
+
+
 const data = [{"date": "7/1", "total": 214, "timeout": 39, "noDeliver": 5, "earlyFake": 120, "unsatisfied": 59}, {"date": "7/2", "total": 194, "timeout": 41, "noDeliver": 13, "earlyFake": 104, "unsatisfied": 47}, {"date": "7/3", "total": 204, "timeout": 28, "noDeliver": 15, "earlyFake": 103, "unsatisfied": 69}, {"date": "7/4", "total": 272, "timeout": 64, "noDeliver": 15, "earlyFake": 143, "unsatisfied": 67}, {"date": "7/5", "total": 251, "timeout": 73, "noDeliver": 37, "earlyFake": 102, "unsatisfied": 48}, {"date": "7/6", "total": 262, "timeout": 113, "noDeliver": 10, "earlyFake": 112, "unsatisfied": 31}, {"date": "7/7", "total": 335, "timeout": 173, "noDeliver": 19, "earlyFake": 100, "unsatisfied": 53}];
+
+
 
 const labels = data.map(d => d.date);
 
 
 
+
+
+
+
 // Stripe-style vertical hover-line plugin
+
+
 
 const stripeHoverLine = {
 
+
+
   id: 'stripeHoverLine',
+
+
 
   afterDatasetsDraw(chart) {
 
+
+
     const tt = chart.tooltip;
+
+
 
     if (!tt || !tt.opacity) return;
 
+
+
     const active = tt.getActiveElements();
+
+
 
     if (!active.length) return;
 
+
+
     const x = active[0].element.x;
+
+
 
     const {top, bottom} = chart.chartArea;
 
+
+
     const ctx = chart.ctx;
+
+
 
     ctx.save();
 
+
+
     ctx.beginPath();
+
+
 
     ctx.setLineDash([4, 4]);
 
+
+
     ctx.strokeStyle = 'rgba(99, 91, 255, 0.4)';
+
+
 
     ctx.lineWidth = 1;
 
+
+
     ctx.moveTo(x, top); ctx.lineTo(x, bottom);
+
+
 
     ctx.stroke();
 
+
+
     ctx.restore();
+
+
 
   }
 
+
+
 };
+
+
+
+
 
 
 
 function gradFill(ctx, area, rgb) {
 
+
+
   if (!area) return `rgba(${rgb}, 0.05)`;
+
+
 
   const g = ctx.createLinearGradient(0, area.top, 0, area.bottom);
 
+
+
   g.addColorStop(0, `rgba(${rgb}, 0.16)`);
+
+
 
   g.addColorStop(1, `rgba(${rgb}, 0)`);
 
+
+
   return g;
 
+
+
 }
+
+
+
+
 
 
 
 const STRIPE_TT = {
 
+
+
   backgroundColor: '#ffffff',
+
+
 
   titleColor: '#1a1f36', bodyColor: '#1a1f36',
 
+
+
   borderColor: '#e3e8ee', borderWidth: 1,
+
+
 
   padding: 12, cornerRadius: 8,
 
+
+
   displayColors: true, boxPadding: 6,
+
+
 
   titleFont: { weight: '600', size: 12 },
 
+
+
   bodyFont: { size: 13, weight: '500' }
 
+
+
 };
+
+
+
+
 
 
 
 const STRIPE_X = {
 
+
+
   grid: { display: false, drawBorder: false },
+
+
 
   border: { color: '#e3e8ee' },
 
+
+
   ticks: { font: { size: 11 }, color: '#8a8f99', padding: 6, maxTicksLimit: 8 }
 
+
+
 };
+
+
+
+
 
 
 
 const STRIPE_Y = {
 
+
+
   beginAtZero: true,
+
+
 
   grid: { color: '#f0f1f4', drawBorder: false, drawTicks: false },
 
+
+
   border: { display: false },
+
+
 
   ticks: { font: { size: 11 }, color: '#8a8f99', padding: 8, maxTicksLimit: 5 }
 
+
+
 };
+
+
+
+
 
 
 
 // =================== Total chart (Stripe style) ===================
 
+
+
 new Chart(document.getElementById('totalChart'), {
+
+
 
   type: 'line',
 
+
+
   data: {
+
+
 
     labels,
 
+
+
     datasets: [{
+
+
 
       label: '总单',
 
+
+
       data: data.map(d => d.total),
+
+
 
       borderColor: '#635bff',
 
+
+
       borderWidth: 2,
+
+
 
       backgroundColor: ctx => gradFill(ctx.chart.ctx, ctx.chart.chartArea, '99, 91, 255'),
 
+
+
       fill: true,
+
+
 
       tension: 0.3,
 
+
+
       pointRadius: 0,
+
+
 
       pointHoverRadius: 5,
 
+
+
       pointHoverBackgroundColor: '#ffffff',
+
+
 
       pointHoverBorderColor: '#635bff',
 
+
+
       pointHoverBorderWidth: 2.5,
+
+
 
       borderJoinStyle: 'round'
 
+
+
     }]
 
+
+
   },
+
+
 
   options: {
 
+
+
     responsive: true, maintainAspectRatio: false,
+
+
 
     layout: { padding: { top: 8, bottom: 0, left: 0, right: 0 } },
 
+
+
     interaction: { mode: 'index', intersect: false },
+
+
 
     plugins: {
 
+
+
       legend: { display: false },
+
+
 
       tooltip: {
 
+
+
         ...STRIPE_TT,
+
+
 
         displayColors: false,
 
+
+
         callbacks: { title: c => c[0].label, label: c => c.parsed.y + ' 单' }
+
+
 
       }
 
+
+
     },
+
+
 
     scales: { x: STRIPE_X, y: STRIPE_Y }
 
+
+
   },
+
+
 
   plugins: [stripeHoverLine]
 
+
+
 });
+
+
+
+
 
 
 
 // =================== Category chart (Stripe style) ===================
 
+
+
 function catDataset(label, key, color, rgb, withFill) {
+
+
 
   return {
 
+
+
     label,
+
+
 
     data: data.map(d => d[key]),
 
+
+
     borderColor: color,
+
+
 
     borderWidth: 2,
 
+
+
     backgroundColor: withFill ? (ctx => gradFill(ctx.chart.ctx, ctx.chart.chartArea, rgb)) : 'transparent',
+
+
 
     fill: withFill,
 
+
+
     tension: 0.3,
+
+
 
     pointRadius: 0,
 
+
+
     pointHoverRadius: 5,
+
+
 
     pointHoverBackgroundColor: '#ffffff',
 
+
+
     pointHoverBorderColor: color,
+
+
 
     pointHoverBorderWidth: 2.5,
 
+
+
     borderJoinStyle: 'round'
+
+
 
   };
 
+
+
 }
+
+
+
+
 
 
 
 new Chart(document.getElementById('categoryChart'), {
 
+
+
   type: 'line',
+
+
 
   data: {
 
+
+
     labels,
+
+
 
     datasets: [
 
+
+
       catDataset('提前/虚假', 'earlyFake', '#635bff', '99, 91, 255', true),
+
+
 
       catDataset('T30超时', 'timeout', '#cd3d63', '205, 61, 99', false),
 
+
+
       catDataset('不满意', 'unsatisfied', '#f5a623', '245, 166, 35', false),
+
+
 
       catDataset('未妥投', 'noDeliver', '#198a3f', '25, 138, 63', false),
 
+
+
     ]
 
+
+
   },
+
+
 
   options: {
 
+
+
     responsive: true, maintainAspectRatio: false,
+
+
 
     layout: { padding: { top: 8, bottom: 0, left: 0, right: 0 } },
 
+
+
     interaction: { mode: 'index', intersect: false },
+
+
 
     plugins: {
 
+
+
       legend: { display: false },
+
+
 
       tooltip: {
 
+
+
         ...STRIPE_TT,
+
+
 
         callbacks: {
 
+
+
           title: c => c[0].label,
+
+
 
           label: c => `${c.dataset.label}: ${c.parsed.y} 单`,
 
+
+
           labelColor: c => ({ borderColor: c.dataset.borderColor, backgroundColor: c.dataset.borderColor, borderWidth: 0, borderRadius: 2 })
+
+
 
         }
 
+
+
       }
+
+
 
     },
 
+
+
     scales: { x: STRIPE_X, y: STRIPE_Y }
+
+
 
   },
 
+
+
   plugins: [stripeHoverLine]
 
+
+
 });
+
+
+
+
 
 
 
 const tbody = document.getElementById('tableBody');
 
+
+
 for (let i = data.length - 1; i >= 0; i--) {
+
+
 
   const d = data[i];
 
+
+
   const prev = i > 0 ? data[i-1].total : null;
+
+
 
   let changeHtml = '-';
 
+
+
   if (prev !== null) {
+
+
 
     const diff = d.total - prev;
 
+
+
     const pct = ((diff / prev) * 100).toFixed(1);
+
+
 
     const cls = diff > 0 ? 'up' : diff < 0 ? 'down' : 'flat';
 
+
+
     const sign = diff > 0 ? '+' : '';
+
+
 
     changeHtml = `<span class="trend-badge ${cls}">${sign}${diff} 单(${sign}${pct}%)</span>`;
 
+
+
   }
+
+
 
   tbody.innerHTML += `<tr>
 
+
+
     <td>${d.date}</td>
+
+
 
     <td><strong>${d.total}</strong></td>
 
+
+
     <td>${changeHtml}</td>
+
+
 
     <td>${d.timeout}</td>
 
+
+
     <td>${d.noDeliver}</td>
+
+
 
     <td>${d.earlyFake}</td>
 
+
+
     <td>${d.unsatisfied}</td>
 
+
+
   </tr>`;
+
+
 
 };
 
 
 
+
+
+
+
 // Collapsible station sections (first=newest expanded, rest collapsed)
+
+
 
 document.querySelectorAll('.station-section').forEach((sec, i) => {
 
+
+
   if (i > 0) sec.classList.add('collapsed');
 
+
+
 });
+
+
+
+
 
 
 
 // Copy summary as rich text (HTML) for pasting into DingTalk
 
+
+
 function copySummary(dateKey) {
 
+
+
   const container = document.getElementById('summary-' + dateKey);
+
+
 
   if (!container) return;
 
+
+
   // Clone and remove the copy button from the clone
+
+
 
   const clone = container.cloneNode(true);
 
+
+
   const bar = clone.querySelector('.summary-copy-bar');
+
+
 
   if (bar) bar.remove();
 
+
+
   const htmlContent = clone.innerHTML;
+
+
 
   const textContent = clone.innerText || clone.textContent;
 
+
+
   // Use Clipboard API with HTML mime type
+
+
 
   if (navigator.clipboard && navigator.clipboard.write) {
 
+
+
     const blob = new Blob([htmlContent], {type: 'text/html'});
+
+
 
     const textBlob = new Blob([textContent], {type: 'text/plain'});
 
+
+
     navigator.clipboard.write([new ClipboardItem({'text/html': blob, 'text/plain': textBlob})])
+
+
 
       .then(() => showCopied(dateKey))
 
+
+
       .catch(() => fallbackCopy(container, dateKey));
+
+
 
   } else {
 
+
+
     fallbackCopy(container, dateKey);
+
+
 
   }
 
+
+
 }
+
+
 
 function fallbackCopy(container, dateKey) {
 
+
+
   // Fallback: select and execCommand
+
+
 
   const range = document.createRange();
 
+
+
   const bar = container.querySelector('.summary-copy-bar');
+
+
 
   if (bar) bar.style.display = 'none';
 
+
+
   range.selectNodeContents(container);
+
+
 
   const sel = window.getSelection();
 
+
+
   sel.removeAllRanges();
+
+
 
   sel.addRange(range);
 
+
+
   document.execCommand('copy');
+
+
 
   sel.removeAllRanges();
 
+
+
   if (bar) bar.style.display = '';
+
+
 
   showCopied(dateKey);
 
+
+
 }
+
+
 
 function showCopied(dateKey) {
 
+
+
   const container = document.getElementById('summary-' + dateKey);
+
+
 
   const btn = container.querySelector('.copy-btn');
 
+
+
   if (btn) {
+
+
 
     btn.textContent = '已复制';
 
+
+
     btn.classList.add('copied');
+
+
 
     setTimeout(() => { btn.textContent = '复制'; btn.classList.remove('copied'); }, 2000);
 
+
+
   }
 
+
+
 }
+
+
+
+
 
 
 
 // ========== TAB SWITCHING ==========
 
+
+
 document.querySelectorAll('.main-tab').forEach(tab => {
+
+
 
   tab.addEventListener('click', () => {
 
+
+
     document.querySelectorAll('.main-tab').forEach(t => t.classList.remove('active'));
+
+
 
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
 
+
+
     tab.classList.add('active');
+
+
 
     document.getElementById(tab.dataset.tab).classList.add('active');
 
+
+
     if (tab.dataset.tab === 'tabAgent' && typeof initAgentTab === 'function' && !window._agentInited) {
+
+
 
       window._agentInited = true;
 
+
+
       initAgentTab();
+
+
 
     }
 
+
+
   });
 
+
+
 });
+
+
+
+
 
 
 
 // ========== AGENT TAB ==========
 
+
+
 // AGENT_DATA placeholder - will be replaced by gen_report_june.py
+
+
 
 var AGENT_DATA = {"深圳市麻豆人配送服务有限公司": {"series": [34, 24, 38, 33, 33, 16, 27], "cat_series": {"timeout": [0, 0, 0, 1, 3, 0, 0], "no_deliver": [0, 0, 0, 1, 0, 0, 0], "early_fake": [13, 13, 18, 12, 13, 9, 11], "unsat": [25, 15, 22, 21, 19, 8, 18]}, "latest": {"total": 27, "timeout": 0, "no_deliver": 0, "early_fake": 11, "unsat": 18, "riders": 17}, "prev_total": 16, "sites": [], "bullets": [{"level": "worse", "text": "⚠️ 7/7 共 27 单（前日 16，恶化 +11）"}]}, "广州晟丽科技有限公司": {"series": [31, 23, 27, 24, 18, 27, 24], "cat_series": {"timeout": [6, 8, 7, 4, 4, 9, 8], "no_deliver": [4, 1, 3, 2, 0, 2, 3], "early_fake": [13, 8, 11, 10, 8, 11, 8], "unsat": [8, 7, 6, 9, 6, 6, 7]}, "latest": {"total": 24, "timeout": 8, "no_deliver": 3, "early_fake": 8, "unsat": 7, "riders": 14}, "prev_total": 27, "sites": [], "bullets": [{"level": "improve", "text": "✅ 7/7 共 24 单（前日 27，改善 -3）"}]}, "厦门派得快配送服务有限公司": {"series": [24, 25, 7, 48, 24, 37, 79], "cat_series": {"timeout": [2, 3, 0, 22, 10, 7, 51], "no_deliver": [0, 0, 0, 6, 1, 1, 9], "early_fake": [18, 20, 5, 20, 12, 26, 17], "unsat": [4, 2, 3, 5, 2, 3, 2]}, "latest": {"total": 79, "timeout": 51, "no_deliver": 9, "early_fake": 17, "unsat": 2, "riders": 12}, "prev_total": 37, "sites": [], "bullets": [{"level": "worse", "text": "⚠️ 7/7 共 79 单（前日 37，恶化 +42）"}]}, "珠海市智创未来信息技术有限公司": {"series": [21, 32, 40, 36, 73, 8, 17], "cat_series": {"timeout": [8, 12, 18, 17, 33, 0, 0], "no_deliver": [0, 4, 7, 3, 29, 0, 2], "early_fake": [9, 12, 11, 11, 9, 8, 10], "unsat": [5, 6, 6, 9, 5, 0, 7]}, "latest": {"total": 17, "timeout": 0, "no_deliver": 2, "early_fake": 10, "unsat": 7, "riders": 8}, "prev_total": 8, "sites": [], "bullets": [{"level": "worse", "text": "⚠️ 7/7 共 17 单（前日 8，恶化 +9）"}]}, "广州同学帮信息科技有限公司": {"series": [15, 12, 13, 28, 19, 17, 10], "cat_series": {"timeout": [1, 0, 0, 0, 0, 0, 0], "no_deliver": [0, 0, 0, 0, 1, 0, 0], "early_fake": [14, 12, 12, 24, 17, 14, 10], "unsat": [1, 1, 3, 6, 1, 3, 0]}, "latest": {"total": 10, "timeout": 0, "no_deliver": 0, "early_fake": 10, "unsat": 0, "riders": 4}, "prev_total": 17, "sites": [], "bullets": [{"level": "improve", "text": "✅ 7/7 共 10 单（前日 17，改善 -7）"}]}, "广州云闪送科技服务有限公司": {"series": [10, 2, 3, 6, 1, 93, 34], "cat_series": {"timeout": [5, 0, 0, 5, 0, 83, 29], "no_deliver": [1, 0, 0, 1, 0, 5, 0], "early_fake": [4, 2, 3, 0, 1, 4, 5], "unsat": [0, 0, 1, 1, 0, 1, 0]}, "latest": {"total": 34, "timeout": 29, "no_deliver": 0, "early_fake": 5, "unsat": 0, "riders": 12}, "prev_total": 93, "sites": [], "bullets": [{"level": "improve", "text": "✅ 7/7 共 34 单（前日 93，改善 -59）"}]}, "广州易送达科技有限公司": {"series": [10, 6, 6, 8, 2, 5, 8], "cat_series": {"timeout": [1, 1, 0, 0, 0, 0, 2], "no_deliver": [0, 1, 0, 0, 1, 1, 2], "early_fake": [4, 4, 3, 7, 1, 3, 3], "unsat": [5, 0, 3, 1, 1, 1, 2]}, "latest": {"total": 8, "timeout": 2, "no_deliver": 2, "early_fake": 3, "unsat": 2, "riders": 7}, "prev_total": 5, "sites": [], "bullets": [{"level": "worse", "text": "⚠️ 7/7 共 8 单（前日 5，恶化 +3）"}]}, "广东集一供应链有限公司": {"series": [10, 3, 5, 3, 2, 2, 2], "cat_series": {"timeout": [5, 2, 0, 0, 0, 1, 1], "no_deliver": [0, 0, 0, 0, 0, 0, 0], "early_fake": [5, 1, 5, 3, 2, 1, 1], "unsat": [0, 0, 0, 0, 0, 0, 0]}, "latest": {"total": 2, "timeout": 1, "no_deliver": 0, "early_fake": 1, "unsat": 0, "riders": 2}, "prev_total": 2, "sites": [], "bullets": [{"level": "flat", "text": "➖ 7/7 共 2 单（与前日持平）"}]}, "广州胜凯者运输有限公司": {"series": [9, 8, 7, 15, 5, 8, 9], "cat_series": {"timeout": [0, 0, 0, 2, 0, 1, 0], "no_deliver": [0, 0, 0, 0, 0, 0, 0], "early_fake": [7, 6, 3, 10, 1, 4, 3], "unsat": [2, 3, 4, 3, 4, 3, 7]}, "latest": {"total": 9, "timeout": 0, "no_deliver": 0, "early_fake": 3, "unsat": 7, "riders": 5}, "prev_total": 8, "sites": [], "bullets": [{"level": "worse", "text": "⚠️ 7/7 共 9 单（前日 8，恶化 +1）"}]}, "松严科技（广州）有限公司": {"series": [9, 11, 5, 9, 10, 3, 8], "cat_series": {"timeout": [0, 1, 0, 2, 1, 0, 0], "no_deliver": [0, 7, 0, 0, 0, 0, 0], "early_fake": [8, 3, 3, 7, 7, 2, 5], "unsat": [1, 0, 3, 0, 2, 1, 3]}, "latest": {"total": 8, "timeout": 0, "no_deliver": 0, "early_fake": 5, "unsat": 3, "riders": 4}, "prev_total": 3, "sites": [], "bullets": [{"level": "worse", "text": "⚠️ 7/7 共 8 单（前日 3，恶化 +5）"}]}, "优地科技(无锡)有限公司": {"series": [9, 17, 12, 13, 23, 7, 6], "cat_series": {"timeout": [1, 4, 1, 3, 3, 0, 1], "no_deliver": [0, 0, 0, 0, 0, 0, 0], "early_fake": [7, 12, 9, 8, 19, 7, 5], "unsat": [1, 2, 2, 2, 1, 0, 0]}, "latest": {"total": 6, "timeout": 1, "no_deliver": 0, "early_fake": 5, "unsat": 0, "riders": 5}, "prev_total": 7, "sites": [], "bullets": [{"level": "improve", "text": "✅ 7/7 共 6 单（前日 7，改善 -1）"}]}, "广州闪送侠信息科技有限公司": {"series": [7, 5, 6, 4, 4, 11, 9], "cat_series": {"timeout": [2, 2, 0, 0, 1, 5, 8], "no_deliver": [0, 0, 2, 0, 0, 0, 0], "early_fake": [2, 3, 3, 4, 2, 6, 1], "unsat": [4, 1, 2, 0, 1, 0, 0]}, "latest": {"total": 9, "timeout": 8, "no_deliver": 0, "early_fake": 1, "unsat": 0, "riders": 2}, "prev_total": 11, "sites": [], "bullets": [{"level": "improve", "text": "✅ 7/7 共 9 单（前日 11，改善 -2）"}]}, "中山市铭捷商务服务有限公司": {"series": [6, 2, 1, 6, 1, 0, 1], "cat_series": {"timeout": [4, 1, 0, 1, 0, 0, 1], "no_deliver": [0, 0, 0, 0, 0, 0, 0], "early_fake": [2, 0, 1, 5, 1, 0, 0], "unsat": [0, 1, 0, 1, 0, 0, 0]}, "latest": {"total": 1, "timeout": 1, "no_deliver": 0, "early_fake": 0, "unsat": 0, "riders": 1}, "prev_total": 0, "sites": [], "bullets": [{"level": "worse", "text": "⚠️ 7/7 共 1 单（前日 0，恶化 +1）"}]}, "广州优送达信息科技有限公司": {"series": [4, 0, 1, 1, 2, 0, 64], "cat_series": {"timeout": [1, 0, 0, 0, 0, 0, 63], "no_deliver": [0, 0, 0, 0, 2, 0, 0], "early_fake": [3, 0, 1, 1, 0, 0, 1], "unsat": [1, 0, 0, 0, 0, 0, 1]}, "latest": {"total": 64, "timeout": 63, "no_deliver": 0, "early_fake": 1, "unsat": 1, "riders": 2}, "prev_total": 0, "sites": [], "bullets": [{"level": "worse", "text": "⚠️ 7/7 共 64 单（前日 0，恶化 +64）"}]}, "珠海煜明数字科技有限公司": {"series": [3, 4, 6, 6, 6, 3, 3], "cat_series": {"timeout": [0, 0, 0, 0, 1, 0, 0], "no_deliver": [0, 0, 0, 0, 1, 0, 0], "early_fake": [2, 0, 3, 1, 1, 2, 3], "unsat": [1, 4, 4, 5, 3, 1, 0]}, "latest": {"total": 3, "timeout": 0, "no_deliver": 0, "early_fake": 3, "unsat": 0, "riders": 3}, "prev_total": 3, "sites": [], "bullets": [{"level": "flat", "text": "➖ 7/7 共 3 单（与前日持平）"}]}, "广州万物智联技术有限公司": {"series": [3, 0, 3, 0, 0, 0, 0], "cat_series": {"timeout": [0, 0, 0, 0, 0, 0, 0], "no_deliver": [0, 0, 0, 0, 0, 0, 0], "early_fake": [3, 0, 2, 0, 0, 0, 0], "unsat": [0, 0, 1, 0, 0, 0, 0]}, "latest": {"total": 0, "timeout": 0, "no_deliver": 0, "early_fake": 0, "unsat": 0, "riders": 0}, "prev_total": 0, "sites": [], "bullets": [{"level": "flat", "text": "📭 7/7 该代理商无严重不完美订单"}]}, "广州餐谋天下商务有限公司": {"series": [3, 0, 1, 1, 0, 1, 1], "cat_series": {"timeout": [3, 0, 0, 0, 0, 1, 0], "no_deliver": [0, 0, 0, 1, 0, 0, 0], "early_fake": [0, 0, 0, 0, 0, 0, 1], "unsat": [0, 0, 1, 0, 0, 0, 0]}, "latest": {"total": 1, "timeout": 0, "no_deliver": 0, "early_fake": 1, "unsat": 0, "riders": 1}, "prev_total": 1, "sites": [], "bullets": [{"level": "flat", "text": "➖ 7/7 共 1 单（与前日持平）"}]}, "广州荣榕科技服务有限公司": {"series": [2, 0, 1, 6, 7, 0, 7], "cat_series": {"timeout": [0, 0, 0, 0, 5, 0, 6], "no_deliver": [0, 0, 0, 0, 0, 0, 0], "early_fake": [2, 0, 1, 6, 2, 0, 1], "unsat": [0, 0, 0, 1, 0, 0, 0]}, "latest": {"total": 7, "timeout": 6, "no_deliver": 0, "early_fake": 1, "unsat": 0, "riders": 2}, "prev_total": 0, "sites": [], "bullets": [{"level": "worse", "text": "⚠️ 7/7 共 7 单（前日 0，恶化 +7）"}]}, "深圳市阳光快送科技有限公司": {"series": [2, 2, 2, 0, 1, 4, 5], "cat_series": {"timeout": [0, 1, 1, 0, 0, 0, 0], "no_deliver": [0, 0, 1, 0, 1, 1, 3], "early_fake": [2, 1, 0, 0, 0, 3, 2], "unsat": [1, 0, 0, 0, 0, 0, 1]}, "latest": {"total": 5, "timeout": 0, "no_deliver": 3, "early_fake": 2, "unsat": 1, "riders": 4}, "prev_total": 4, "sites": [], "bullets": [{"level": "worse", "text": "⚠️ 7/7 共 5 单（前日 4，恶化 +1）"}]}, "广州市智安信息科技有限公司": {"series": [1, 2, 2, 2, 1, 2, 3], "cat_series": {"timeout": [0, 0, 1, 0, 0, 0, 0], "no_deliver": [0, 0, 1, 0, 0, 0, 0], "early_fake": [1, 2, 0, 1, 1, 2, 3], "unsat": [0, 0, 0, 1, 1, 0, 0]}, "latest": {"total": 3, "timeout": 0, "no_deliver": 0, "early_fake": 3, "unsat": 0, "riders": 1}, "prev_total": 2, "sites": [], "bullets": [{"level": "worse", "text": "⚠️ 7/7 共 3 单（前日 2，恶化 +1）"}]}, "广州极速达网络科技有限公司": {"series": [1, 5, 8, 10, 5, 3, 5], "cat_series": {"timeout": [0, 0, 0, 0, 1, 1, 0], "no_deliver": [0, 0, 0, 1, 0, 0, 0], "early_fake": [1, 4, 5, 8, 3, 1, 4], "unsat": [0, 1, 3, 1, 1, 1, 1]}, "latest": {"total": 5, "timeout": 0, "no_deliver": 0, "early_fake": 4, "unsat": 1, "riders": 4}, "prev_total": 3, "sites": [], "bullets": [{"level": "worse", "text": "⚠️ 7/7 共 5 单（前日 3，恶化 +2）"}]}, "广州永乐餐饮文化有限责任公司": {"series": [0, 4, 0, 3, 0, 3, 0], "cat_series": {"timeout": [0, 4, 0, 1, 0, 2, 0], "no_deliver": [0, 0, 0, 0, 0, 0, 0], "early_fake": [0, 0, 0, 2, 0, 1, 0], "unsat": [0, 0, 0, 0, 0, 0, 0]}, "latest": {"total": 0, "timeout": 0, "no_deliver": 0, "early_fake": 0, "unsat": 0, "riders": 0}, "prev_total": 3, "sites": [], "bullets": [{"level": "flat", "text": "📭 7/7 该代理商无严重不完美订单"}]}, "深圳市顺丰同城物流有限公司广州分公司": {"series": [0, 3, 3, 3, 0, 2, 3], "cat_series": {"timeout": [0, 0, 0, 0, 0, 0, 0], "no_deliver": [0, 0, 0, 0, 0, 0, 0], "early_fake": [0, 1, 1, 2, 0, 1, 2], "unsat": [0, 2, 2, 1, 0, 1, 1]}, "latest": {"total": 3, "timeout": 0, "no_deliver": 0, "early_fake": 2, "unsat": 1, "riders": 3}, "prev_total": 2, "sites": [], "bullets": [{"level": "worse", "text": "⚠️ 7/7 共 3 单（前日 2，恶化 +1）"}]}, "江苏行之途智能科技有限公司": {"series": [0, 2, 1, 5, 12, 3, 6], "cat_series": {"timeout": [0, 2, 0, 5, 11, 2, 3], "no_deliver": [0, 0, 1, 0, 0, 0, 0], "early_fake": [0, 0, 0, 0, 1, 1, 2], "unsat": [0, 0, 0, 0, 1, 0, 1]}, "latest": {"total": 6, "timeout": 3, "no_deliver": 0, "early_fake": 2, "unsat": 1, "riders": 3}, "prev_total": 3, "sites": [], "bullets": [{"level": "worse", "text": "⚠️ 7/7 共 6 单（前日 3，恶化 +3）"}]}, "广州秉盛电子商务有限公司": {"series": [0, 1, 2, 1, 0, 1, 3], "cat_series": {"timeout": [0, 0, 0, 1, 0, 1, 0], "no_deliver": [0, 0, 0, 0, 0, 0, 0], "early_fake": [0, 0, 0, 0, 0, 0, 1], "unsat": [0, 1, 2, 0, 0, 0, 2]}, "latest": {"total": 3, "timeout": 0, "no_deliver": 0, "early_fake": 1, "unsat": 2, "riders": 3}, "prev_total": 1, "sites": [], "bullets": [{"level": "worse", "text": "⚠️ 7/7 共 3 单（前日 1，恶化 +2）"}]}, "广州云馨物流配送有限公司": {"series": [0, 1, 1, 0, 1, 0, 0], "cat_series": {"timeout": [0, 0, 0, 0, 0, 0, 0], "no_deliver": [0, 0, 0, 0, 1, 0, 0], "early_fake": [0, 0, 0, 0, 0, 0, 0], "unsat": [0, 1, 1, 0, 0, 0, 0]}, "latest": {"total": 0, "timeout": 0, "no_deliver": 0, "early_fake": 0, "unsat": 0, "riders": 0}, "prev_total": 0, "sites": [], "bullets": [{"level": "flat", "text": "📭 7/7 该代理商无严重不完美订单"}]}, "广州楠蓓莱科技有限公司": {"series": [0, 0, 2, 1, 0, 2, 1], "cat_series": {"timeout": [0, 0, 0, 0, 0, 0, 0], "no_deliver": [0, 0, 0, 0, 0, 0, 0], "early_fake": [0, 0, 2, 1, 0, 2, 1], "unsat": [0, 0, 0, 0, 0, 0, 0]}, "latest": {"total": 1, "timeout": 0, "no_deliver": 0, "early_fake": 1, "unsat": 0, "riders": 1}, "prev_total": 2, "sites": [], "bullets": [{"level": "improve", "text": "✅ 7/7 共 1 单（前日 2，改善 -1）"}]}, "南宁市联睿盟天科技有限公司": {"series": [0, 0, 1, 0, 1, 4, 0], "cat_series": {"timeout": [0, 0, 0, 0, 0, 0, 0], "no_deliver": [0, 0, 0, 0, 0, 0, 0], "early_fake": [0, 0, 1, 0, 1, 4, 0], "unsat": [0, 0, 0, 0, 0, 2, 0]}, "latest": {"total": 0, "timeout": 0, "no_deliver": 0, "early_fake": 0, "unsat": 0, "riders": 0}, "prev_total": 4, "sites": [], "bullets": [{"level": "flat", "text": "📭 7/7 该代理商无严重不完美订单"}]}};
 var AGENT_LABELS = [];
+
+
 
 var AGENT_NAMES = ["广州晟丽科技有限公司", "广州秉盛电子商务有限公司", "广州闪送侠信息科技有限公司", "蜂鸟众包", "广州优送达信息科技有限公司", "广东集一供应链有限公司", "深圳市阳光快送科技有限公司", "广州永乐餐饮文化有限责任公司", "优地科技(无锡)有限公司", "珠海煜明数字科技有限公司", "广州市智安信息科技有限公司", "松严科技（广州）有限公司", "广州同学帮信息科技有限公司", "深圳市迅享生活科技有限公司", "广州云闪送科技服务有限公司", "广州荣榕科技服务有限公司", "广州极速达网络科技有限公司", "广州餐谋天下商务有限公司", "广州易送达科技有限公司", "江苏行之途智能科技有限公司", "广州资进餐饮管理有限公司", "珠海市智创未来信息技术有限公司", "广州楠蓓莱科技有限公司", "南宁市联睿盟天科技有限公司", "深圳市顺丰同城物流有限公司广州分公司", "广州胜凯者运输有限公司", "广州万物智联技术有限公司", "广州市特牛信息科技有限公司", "中山市铭捷商务服务有限公司", "厦门派得快配送服务有限公司", "广州云馨物流配送有限公司", "深圳市麻豆人配送服务有限公司"];
 
 
 
+
+
+
+
 function initAgentTab() {
+
+
 
   if (!AGENT_NAMES.length) {
 
+
+
     document.getElementById('agReviewList').innerHTML = '<li class="flat">暂无代理商维度数据</li>';
+
+
 
     return;
 
+
+
   }
+
+
 
   agSelectAgent(AGENT_NAMES[0]);
 
+
+
   agRenderList('');
 
+
+
 }
+
+
+
+
 
 
 
 let agChart = null;
 
+
+
 let agCurrentAgent = '';
+
+
+
+
 
 
 
 function agFmt(n) { return n == null ? '0' : String(n); }
 
+
+
 function agDiffSpan(diff) {
+
+
 
   if (diff > 0) return '<span class="ag-diff-up">+' + diff + '</span>';
 
+
+
   if (diff < 0) return '<span class="ag-diff-down">' + diff + '</span>';
+
+
 
   return '<span class="ag-diff-flat">0</span>';
 
+
+
 }
+
+
+
+
 
 
 
 function agRenderSummary(rec) {
 
+
+
   const prev = rec.prev_total || 0, cur = rec.latest.total;
+
+
 
   let chTxt = '与前日持平', cls = '';
 
+
+
   if (cur > prev) { chTxt = '↑' + (cur-prev) + ' 单 (' + (prev?Math.round((cur-prev)/prev*100):'∞') + '%)'; cls = 'bad'; }
+
+
 
   else if (cur < prev) { chTxt = '↓' + (prev-cur) + ' 单 (-' + Math.round((prev-cur)/prev*100) + '%)'; cls = 'good'; }
 
+
+
   document.getElementById('agSummaryCards').innerHTML =
+
+
 
     '<div class="ag-card ' + cls + '"><div class="label">当日总单量</div><div class="value">' + agFmt(cur) + '</div><div class="change">' + chTxt + '</div></div>' +
 
+
+
     '<div class="ag-card"><div class="label">T30 超时</div><div class="value">' + agFmt(rec.latest.timeout) + '</div><div class="change">' + (cur?Math.round(rec.latest.timeout/cur*100):0) + '%</div></div>' +
+
+
 
     '<div class="ag-card"><div class="label">未妥投</div><div class="value">' + agFmt(rec.latest.no_deliver) + '</div><div class="change">' + (cur?Math.round(rec.latest.no_deliver/cur*100):0) + '%</div></div>' +
 
+
+
     '<div class="ag-card"><div class="label">提前/虚假</div><div class="value">' + agFmt(rec.latest.early_fake) + '</div><div class="change">' + (cur?Math.round(rec.latest.early_fake/cur*100):0) + '%</div></div>' +
+
+
 
     '<div class="ag-card"><div class="label">不满意</div><div class="value">' + agFmt(rec.latest.unsat) + '</div><div class="change">' + (cur?Math.round(rec.latest.unsat/cur*100):0) + '%</div></div>';
 
+
+
 }
+
+
+
+
 
 
 
 function agRenderChart(rec) {
 
+
+
   if (agChart) agChart.destroy();
+
+
 
   const ctx = document.getElementById('agTrendChart').getContext('2d');
 
+
+
   agChart = new Chart(ctx, {
+
+
 
     type: 'line',
 
+
+
     data: {
+
+
 
       labels: AGENT_LABELS,
 
+
+
       datasets: [
+
+
 
         { label:'总单量', data:rec.series, borderColor:'#635bff', backgroundColor:'rgba(99,91,255,0.08)', fill:true, tension:0.3, borderWidth:2.5, pointRadius:4, pointHoverRadius:6 },
 
+
+
         { label:'T30 超时', data:rec.cat_series.timeout, borderColor:'#ff9500', borderWidth:1.8, tension:0.3, pointRadius:3, hidden:true },
+
+
 
         { label:'未妥投', data:rec.cat_series.no_deliver, borderColor:'#dc2626', borderWidth:1.8, tension:0.3, pointRadius:3, hidden:true },
 
+
+
         { label:'提前/虚假', data:rec.cat_series.early_fake, borderColor:'#16a34a', borderWidth:1.8, tension:0.3, pointRadius:3, hidden:true },
+
+
 
         { label:'不满意', data:rec.cat_series.unsat, borderColor:'#a855f7', borderWidth:1.8, tension:0.3, pointRadius:3, hidden:true }
 
+
+
       ]
+
+
 
     },
 
+
+
     options: {
+
+
 
       responsive:true, maintainAspectRatio:false,
 
+
+
       plugins:{ legend:{ position:'bottom', labels:{ font:{size:12}, padding:12, usePointStyle:true } } },
+
+
 
       scales:{ y:{ beginAtZero:true, grid:{ color:'rgba(0,0,0,0.04)' } }, x:{ grid:{ display:false } } }
 
+
+
     }
+
+
 
   });
 
+
+
 }
+
+
+
+
 
 
 
 function agRenderReview(rec) {
 
+
+
   const ul = document.getElementById('agReviewList');
+
+
 
   ul.innerHTML = rec.bullets.map(function(b) { return '<li class="' + b.level + '">' + b.text + '</li>'; }).join('');
 
+
+
   if (!rec.bullets.length) ul.innerHTML = '<li class="flat">无显著变化</li>';
 
+
+
 }
+
+
+
+
 
 
 
 function agRenderStations(rec) {
 
+
+
   const tb = document.getElementById('agStationBody');
+
+
 
   if (!rec.sites.length) { tb.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#9ca3af;padding:20px;">该代理商当日无单</td></tr>'; return; }
 
+
+
   tb.innerHTML = rec.sites.map(function(s) {
+
+
 
     var ppl = [];
 
+
+
     if (s.contact) ppl.push('<span class="ag-contacts-pill">@' + s.contact + '</span>');
+
+
 
     if (s.manager && s.manager !== s.contact) ppl.push('<span class="ag-contacts-pill">@' + s.manager + '</span>');
 
+
+
     return '<tr><td>' + s.name + '</td><td class="num"><b>' + s.total + '</b></td><td class="num">' + agDiffSpan(s.diff) + '</td><td class="num">' + (s.timeout||0) + '</td><td class="num">' + (s.no_deliver||0) + '</td><td class="num">' + (s.early_fake||0) + '</td><td class="num">' + (s.unsat||0) + '</td><td>' + (ppl.join('')||'<span style="color:#9ca3af;font-size:11px;">-</span>') + '</td></tr>';
+
+
 
   }).join('');
 
+
+
 }
+
+
+
+
 
 
 
 function agSelectAgent(name) {
 
+
+
   if (!AGENT_DATA[name]) return;
+
+
 
   agCurrentAgent = name;
 
+
+
   document.getElementById('agentInput').value = name;
+
+
 
   var rec = AGENT_DATA[name];
 
+
+
   agRenderSummary(rec);
+
+
 
   agRenderChart(rec);
 
+
+
   agRenderReview(rec);
+
+
 
   agRenderStations(rec);
 
+
+
 }
+
+
+
+
 
 
 
 function agRenderList(filter) {
 
+
+
   var f = (filter||'').trim().toLowerCase();
+
+
 
   var items = AGENT_NAMES.filter(function(n) { return !f || n.toLowerCase().indexOf(f) >= 0; });
 
+
+
   var list = document.getElementById('agentList');
+
+
 
   list.innerHTML = items.map(function(n) {
 
+
+
     var cnt = AGENT_DATA[n] ? AGENT_DATA[n].latest.total : 0;
+
+
 
     return '<div class="ag-combo-item' + (n===agCurrentAgent?' active':'') + '" data-name="' + n.replace(/"/g,'&quot;') + '"><span>' + n + '</span><span class="num">' + cnt + '单</span></div>';
 
+
+
   }).join('');
+
+
 
   list.querySelectorAll('.ag-combo-item').forEach(function(el) {
 
+
+
     el.addEventListener('mousedown', function(e) { e.preventDefault(); agSelectAgent(el.dataset.name); list.classList.remove('open'); });
+
+
 
   });
 
+
+
 }
+
+
 
 (function() {
 
+
+
   var input = document.getElementById('agentInput');
+
+
 
   var list = document.getElementById('agentList');
 
+
+
   if (!input) return;
+
+
 
   input.addEventListener('focus', function() { input.select(); list.classList.add('open'); agRenderList(''); });
 
+
+
   input.addEventListener('input', function() { list.classList.add('open'); agRenderList(input.value); });
 
+
+
   input.addEventListener('blur', function() { setTimeout(function(){ list.classList.remove('open'); input.value = agCurrentAgent; }, 150); });
+
+
 
 })();
 
 
 
+
+
+
+
 document.getElementById('agCopyReview').addEventListener('click', function(e) {
+
+
 
   var rec = AGENT_DATA[agCurrentAgent];
 
+
+
   var lines = ['【' + agCurrentAgent + '】' + AGENT_LABELS[AGENT_LABELS.length-1] + ' 复盘'];
+
+
 
   rec.bullets.forEach(function(b) { lines.push('· ' + b.text.replace(/<\/?b>/g,'')); });
 
+
+
   var txt = lines.join('\n');
+
+
 
   navigator.clipboard.writeText(txt).then(function() {
 
+
+
     e.target.textContent = '已复制';
+
+
 
     e.target.classList.add('copied');
 
+
+
     setTimeout(function() { e.target.textContent = '复制为文本'; e.target.classList.remove('copied'); }, 1500);
+
+
 
   });
 
+
+
 });
+
+
 
 </script>
 
+
+
 </body>
 
+
+
 </html>
+
+
 
