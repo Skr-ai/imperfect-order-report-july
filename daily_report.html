@@ -4388,18 +4388,10 @@ function copyTongbao() {
 }
 
 
-function copyTongbaoDay(dateKey) {
-  var el = document.getElementById('tongbao-' + dateKey);
-  if (!el) return;
-  var lines = [];
-  el.querySelectorAll('.tongbao-line').forEach(function(p) { lines.push(p.textContent.trim()); });
-  var text = lines.join('\n\n');
-  if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(text); }
-  else { var ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); }
-  event.target.textContent = '已复制';
-  event.target.classList.add('copied');
-  setTimeout(function() { event.target.textContent = '复制'; event.target.classList.remove('copied'); }, 1500);
-}
+
+
+
+
 
 
 function copyTongbaoDay(dateKey) {
@@ -4407,16 +4399,13 @@ function copyTongbaoDay(dateKey) {
   if (!sec) return;
   var lines = [];
   sec.querySelectorAll('.tongbao-line').forEach(function(p) { lines.push(p.textContent.trim()); });
-  var text = lines.join('
-
-');
+  var text = lines.join('\n\n');
   if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(text); }
   else { var ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); }
   event.target.textContent = '已复制';
   event.target.classList.add('copied');
   setTimeout(function() { event.target.textContent = '复制'; event.target.classList.remove('copied'); }, 1500);
 }
-
 </script>
 
 
